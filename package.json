@@ -10,7 +10,7 @@
     "typescript": "^5.1.6"
   },
   "scripts": {
-    "dev": "SMDP_AGENDA_MONGO_DB_URL='mongodb://root:example@localhost:27017/scry?authSource=admin' ts-node . | pino-pretty"
+    "dev": "SMDP_MONGO_DB_URL='mongodb://root:example@localhost:27017/scry?authSource=admin' ts-node . | pino-pretty"
   },
   "dependencies": {
     "@hokify/agenda": "^6.3.0",

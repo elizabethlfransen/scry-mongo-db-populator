@@ -2,32 +2,26 @@ import pino from 'pino';
 import {Agenda} from "@hokify/agenda";
 import {MongoClient} from "mongodb";
 import updateScryfallCollections from "./src/updateScryfallCollections";
+import { getAgenda, TASK_NAME } from "./src/config/agenda-config";
+import { createMongoClient } from "./src/config/mongo-config";
 
+// create dependencies
 const logger = pino();
+let agenda = getAgenda();
 
-const createMongoClient = () => new MongoClient(process.env.SMDP_AGENDA_MONGO_DB_URL!);
-
-const agenda = new Agenda(
-    {
-        db: {
-            address: process.env.SMDP_AGENDA_MONGO_DB_URL!
-        }
-    }
-);
-
-agenda.define('update scryfall collections', job => updateScryfallCollections(logger, createMongoClient(), job));
-
-agenda.define('another job', job => logger.info("logging"));
+// define job
+agenda.define(TASK_NAME, job => updateScryfallCollections(logger, createMongoClient(), job));
 
 (async () => {
+    // start scheduler and run job
     await agenda.start();
-    await agenda.create('update scryfall collections')
+    await agenda.create(TASK_NAME)
         .repeatAt('everyday at 00:00')
         .schedule('now')
         .unique({"unique": true})
         .save();
 
-    await agenda.create('another job')
+    await agenda.create(TASK_NAME)
         .repeatAt('everyday at 00:00')
         .schedule('now')
         .unique({"unique": true})
