@@ -20,10 +20,4 @@ agenda.define(TASK_NAME, job => updateScryfallCollections(logger, createMongoCli
         .schedule('now')
         .unique({"unique": true})
         .save();
-
-    await agenda.create(TASK_NAME)
-        .repeatAt('everyday at 00:00')
-        .schedule('now')
-        .unique({"unique": true})
-        .save();
 })();
